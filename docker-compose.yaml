@@ -1,0 +1,35 @@
+version: '2'
+
+services:
+  db:
+    image: postgres:10.5
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: "test_reactive"
+    ports:
+      - "5432:5432"
+    command: ["postgres", "-c", "log_statement=all"]
+    networks:
+      - my-network
+  server:
+    container_name: application_server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # un-comment if we want to re-use existing image
+    # image: application_server:latest
+    ports:
+    - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      SPRING_R2DBC_URL: r2dbc:postgresql://db:5432/test_reactive
+      SPRING_R2DBC_USERNAME: postgres
+      SPRING_R2DBC_PASSWORD: postgres
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge
