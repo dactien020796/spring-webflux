@@ -1,0 +1,14 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  creationTimestamp: null
+  name: springreactive_my-network
+spec:
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              io.kompose.network/springreactive_my-network: "true"
+  podSelector:
+    matchLabels:
+      io.kompose.network/springreactive_my-network: "true"

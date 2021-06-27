@@ -6,6 +6,3 @@ spring:
 logging:
   level:
     org.springframework.data.r2dbc: Debug
-
-server:
-  port: 8080

@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.22.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: server
+  name: server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: server
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.22.0 (HEAD)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/springreactive_my-network: "true"
+        io.kompose.service: server
+    spec:
+      containers:
+        - env:
+            - name: SPRING_R2DBC_PASSWORD
+              value: postgres
+            - name: SPRING_R2DBC_URL
+              value: r2dbc:postgresql://db:5432/test_reactive
+            - name: SPRING_R2DBC_USERNAME
+              value: postgres
+            - name: SERVER_PORT
+              value: "8080"
+          image: dactien020796/spring-reactive-sample
+          name: application-server
+          ports:
+            - containerPort: 8080
+          resources: {}
+      restartPolicy: Always
+status: {}
