@@ -27,11 +27,19 @@ spec:
       containers:
         - env:
             - name: SPRING_R2DBC_PASSWORD
-              value: postgres
+              valueFrom:
+                # Getter value form `secret`
+                secretKeyRef:
+                  name: db-secret
+                  key: password
             - name: SPRING_R2DBC_URL
               value: r2dbc:postgresql://db:5432/test_reactive
             - name: SPRING_R2DBC_USERNAME
-              value: postgres
+              valueFrom:
+                # Getter value form `secret`
+                secretKeyRef:
+                  name: db-secret
+                  key: username
             - name: SERVER_PORT
               value: "8080"
           image: dactien020796/spring-reactive-sample

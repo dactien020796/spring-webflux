@@ -33,9 +33,17 @@ spec:
             - name: POSTGRES_DB
               value: test_reactive
             - name: POSTGRES_PASSWORD
-              value: postgres
+              valueFrom:
+                # Getter value form `secret`
+                secretKeyRef:
+                  name: db-secret
+                  key: password
             - name: POSTGRES_USER
-              value: postgres
+              valueFrom:
+                # Getter value form `secret`
+                secretKeyRef:
+                  name: db-secret
+                  key: username
           image: postgres:10.5
           name: db
           ports:
