@@ -1,10 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: kompose convert
-    kompose.version: 1.22.0 (HEAD)
-  creationTimestamp: null
   labels:
     io.kompose.service: server
   name: server
@@ -13,25 +9,14 @@ spec:
   selector:
     matchLabels:
       io.kompose.service: server
-  strategy: {}
   template:
     metadata:
-      annotations:
-        kompose.cmd: kompose convert
-        kompose.version: 1.22.0 (HEAD)
-      creationTimestamp: null
       labels:
         io.kompose.network/springreactive_my-network: "true"
         io.kompose.service: server
     spec:
       containers:
         - env:
-            - name: SPRING_R2DBC_PASSWORD
-              valueFrom:
-                # Getter value form `secret`
-                secretKeyRef:
-                  name: db-secret
-                  key: password
             - name: SPRING_R2DBC_URL
               valueFrom:
                 configMapKeyRef:
@@ -43,12 +28,19 @@ spec:
                 secretKeyRef:
                   name: db-secret
                   key: username
+            - name: SPRING_R2DBC_PASSWORD
+              valueFrom:
+                # Getter value form `secret`
+                secretKeyRef:
+                  name: db-secret
+                  key: password
             - name: SERVER_PORT
-              value: "8080"
+              valueFrom:
+                configMapKeyRef:
+                  name: server-configmap
+                  key: application_port
           image: dactien020796/spring-reactive-sample
           name: application-server
           ports:
             - containerPort: 8080
-          resources: {}
       restartPolicy: Always
-status: {}

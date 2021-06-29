@@ -4,3 +4,4 @@ metadata:
   name: server-configmap
 data:
   db_connection_string: r2dbc:postgresql://db:5432/test_reactive
+  application_port: "8080"
