@@ -33,7 +33,10 @@ spec:
                   name: db-secret
                   key: password
             - name: SPRING_R2DBC_URL
-              value: r2dbc:postgresql://db:5432/test_reactive
+              valueFrom:
+                configMapKeyRef:
+                  name: server-configmap
+                  key: db_connection_string
             - name: SPRING_R2DBC_USERNAME
               valueFrom:
                 # Getter value form `secret`
