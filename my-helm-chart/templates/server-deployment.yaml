@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels: {{ include "server.common.labels" . | nindent 4}}
+  name: {{ .Values.server_name }}
+spec:
+  replicas: {{ .Values.server_replica }}
+  selector:
+    matchLabels: {{ include "server.common.labels" . | nindent 6}}
+  template:
+    metadata:
+      labels: {{ include "server.common.labels" . | nindent 8}}
+        io.kompose.network/springreactive_my-network: "true"
+    spec:
+      containers:
+        - env:
+            - name: SPRING_R2DBC_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: server-configmap
+                  key: db_connection_string
+            - name: SPRING_R2DBC_USERNAME
+              valueFrom:
+                # Getter value form `secret`
+                secretKeyRef:
+                  name: db-secret
+                  key: username
+            - name: SPRING_R2DBC_PASSWORD
+              valueFrom:
+                # Getter value form `secret`
+                secretKeyRef:
+                  name: db-secret
+                  key: password
+            - name: SERVER_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: server-configmap
+                  key: application_port
+          image: {{ .Values.server_image }}
+          name: application-server
+          ports:
+            - containerPort: {{ .Values.server_port }}
+      restartPolicy: Always

@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.db_name }}
+  labels: {{ include "db.common.labels" . | nindent 4}}
+spec:
+  replicas: {{ .Values.db_replica }}
+  selector:
+    matchLabels: {{ include "db.common.labels" . | nindent 6}}
+  template:
+    metadata:
+      labels: {{ include "db.common.labels" . | nindent 8}}
+        io.kompose.network/springreactive_my-network: "true"
+    spec:
+      containers:
+        - args:
+            - postgres
+            - -c
+            - log_statement=all
+          env:
+            - name: POSTGRES_DB
+              value: test_reactive
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                # Getter value form `secret`
+                secretKeyRef:
+                  name: db-secret
+                  key: password
+            - name: POSTGRES_USER
+              valueFrom:
+                # Getter value form `secret`
+                secretKeyRef:
+                  name: db-secret
+                  key: username
+          name: {{ .Values.db_name }}
+          image: {{ .Values.db_image }}
+          ports:
+            - containerPort: {{ .Values.db_port }}
+      restartPolicy: Always
