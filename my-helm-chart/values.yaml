@@ -1,0 +1,14 @@
+# Values for DB
+db_replica: 1
+db_name: db
+db_image: postgres:10.5
+db_port: 5432
+db_username: postgres
+db_password: postgres
+db_connection_string: r2dbc:postgresql://db:5432/test_reactive
+
+# Values for server
+server_replica: 1
+server_name: server
+server_image: dactien020796/spring-reactive-sample
+server_port: 8080
